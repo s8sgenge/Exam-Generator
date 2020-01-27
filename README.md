@@ -57,7 +57,7 @@ The attributes need to match the pgadmin4 database declarations.
     
     For further details you can create a seperate coverage report for every single python file. It will be in html-format. <br>
     1. `coverage html`
-    2. the command created a folder "project10/ExamGenerator/htmlcov" in which there is a coverage report for every single python file.
+    2. the command created a folder "ExamGenerator/htmlcov" in which there is a coverage report for every single python file.
     
     To delete the old coverage file run : `coverage erase`
     
