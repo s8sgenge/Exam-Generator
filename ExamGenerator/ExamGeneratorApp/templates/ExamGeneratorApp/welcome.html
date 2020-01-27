@@ -1,0 +1,32 @@
+{% extends "template.html" %}
+
+{% block content %}
+
+<div style="display: flex;align-items: center;justify-content: center; height: 96vh; width: 40vw; margin: auto;">
+    <div class="card border-dark shadow">
+        <div class="card-body">
+            <h3 style="color: #212529; text-align: center; margin: 20px;">
+                Welcome
+            </h3>
+            <hr style="width: 15vw;">
+            <p style="text-align: center; margin: 20px;">
+                If this is your first visit, you might still need an admin to assign you the desired rights.<br>
+                <br></rb>
+                You can either hit 'Exercises' to start selecting exercises and generate an exam, <br> or hit 'Import'
+                to import an exercise.
+            </p>
+            <div class="row" style="margin: 30px;">
+                <div class="button-box col-lg-6">
+                    <a href="{% url 'topic overview' %}" class="btn btn-outline-dark btn-block">Exercises</a>
+                </div>
+                <div class="button-box col-lg-6">
+                    <a href="{% url 'upload exercise' %}" class="btn btn-outline-dark btn-block">Import</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</div>
+{% endblock %}

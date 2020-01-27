@@ -1,0 +1,28 @@
+{% extends "template.html" %}
+
+
+{% block content %}
+
+
+<div class="container-fluid" style="width: 90vw; margin: 50px auto; margin-top: 80px;">
+    {% for header in object_list %}
+    <div class="card card-outline-secondary m-4 shadow" style="overflow-y: scroll;max-height: 500px;">
+        <a href="{% url 'header detail view' header.pk %} " style="text-decoration: none; color: black">
+            <div class="card-header shadow-sm">
+                <h5 class="text m-0 font-weight-normal">
+                    {{ header.name }}
+                </h5>
+            </div>
+        </a>
+        <div class="card-body">
+            <p>
+                {{ header.latex_code|linebreaks }}
+            </p>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,102 @@
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Exam Generator</title>
+</head>
+
+<body>
+<div
+        style="background: #212529; height: 100vh;width: 100vw; display: flex;align-items: center;justify-content: center;">
+
+    <div class="row" style="position: absolute; margin-top:25px;">
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="card border-light" style="background: #212529;">
+                <article class="card-body">
+                    <div class="form-row" style="width: 400px;">
+                        <div class="col-md-6 mb-3">
+                            <h4 class="card-title mb-4 mt-1" style="color: white">Sign up</h4>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <a href="{% url 'login' %}" class="btn btn-outline-light btn-block">Sign in</a>
+                        </div>
+                    </div>
+                    <div class="form-row" style="width: 400px;">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group" style="color:white;">
+                                <label>
+                                    Name</label>
+                                {{ form.name }}
+                            </div> <!-- form-group// -->
+
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group" style="color:white;">
+                                <label>Firstname</label>
+                                {{ form.firstname }}
+                            </div> <!-- form-group// -->
+                        </div>
+                    </div>
+                    <div class="form-row" style="width: 400px;">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group" style="color:white;">
+                                <label>Email</label>
+                                {{ form.mail }}
+                            </div> <!-- form-group// -->
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group" style="color:white;">
+                                <label>Username</label>
+                                {{ form.username }}
+                            </div> <!-- form-group// -->
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="width: 400px;">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group" style="color:white;">
+                                <label>Password</label>
+                                {{ form.password }}
+                            </div> <!-- form-group// -->
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group" style="color:white;">
+                                <label>Confirm Password</label>
+                                {{ form.confirm_password }}
+                            </div> <!-- form-group// -->
+                        </div> <!-- form-group// -->
+                    </div>
+                    <div class="form-row" style="width: 400px;">
+                        <div class="col-md-6 mb-3">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>.</label>
+                            <input type="submit" name="new_exerciseText" class="btn btn-outline-light btn-block "
+                                   value="Sign up "/></div> <!-- form-group// -->
+                    </div>
+                    {{ success|safe }}
+                </article>
+            </div> <!-- form-group// -->
+        </form>
+    </div>
+</div>
+
+
+<script src="https://kit.fontawesome.com/8b41a163ea.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+
+{% endblock %}

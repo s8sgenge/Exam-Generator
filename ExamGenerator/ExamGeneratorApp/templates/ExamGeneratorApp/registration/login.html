@@ -1,0 +1,61 @@
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Exam Generator</title>
+</head>
+
+<body>
+<div
+        style="background: #212529; height: 100vh;width: 100vw; display: flex;align-items: center;justify-content: center;">
+
+    <div class="row" style="position: absolute; margin-top: -225px;">
+        <h2 style="color: white;">
+            Exam Generator
+        </h2>
+    </div>
+    <div class="row" style="position: absolute; margin-top: 30px;">
+        <div class="card border-light" style="background: #212529;">
+            <article class="card-body">
+                <a href="{% url 'sign up' %}" class="float-right btn btn-outline-light">Sign up</a>
+                <h4 class="card-title mb-4 mt-1" style="color: white">Sign in</h4>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group" style="color:white;">
+                        {{ form.username.label_tag }}
+                        {{ form.username }}
+                    </div> <!-- form-group// -->
+                    <div class="form-group" style="color:white;">
+                        <a class="float-right" href="#" style="color: white">Forgot?</a>
+                        {{ form.password.label_tag }}
+                        {{ form.password }}
+                    </div> <!-- form-group// -->
+                    <div class="form-group">
+                        <input value="Login" class="btn btn-outline-light btn-block" type="submit">
+
+                        </input>
+                    </div> <!-- form-group// -->
+                </form>
+                {{ error|safe }}
+            </article>
+        </div> <!-- card.// -->
+    </div>
+</div>
+
+
+<script src="https://kit.fontawesome.com/8b41a163ea.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "template.html" %}
+
+
+{% block content %}
+
+<div class="card border-dark" style="margin: 50px auto; width: 90vw; margin-top: 80px;">
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            <div class="row">
+                <div class="card-body">
+                    <h2 style="margin-bottom: 20px;">Topic Overview </h2>
+                    <a href="{% url 'exam detail view' %}" class="btn btn-outline-dark btn-block"
+                       style="width: 150px;">Exam</a>
+                </div>
+            </div>
+        </li>
+
+
+        {% for topic in topics %}
+
+
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-sm-10">
+                    <div class="card-body">{{ topic }}</div>
+                </div>
+                <div class="col-sm-2" style="margin-top: 5px;">
+
+                    {% if topic in examTopics %}
+                    <a type="button" style="color:black" class="btn btn-link"
+                       data-toggle="tooltip"
+                       data-placement="top"
+                       title="Click here to remove the exercise from the exam"
+                       href="{% url 'remove exercise by topic' topic.pk %}?return_to={{ request.path }}"><i
+                            class="fas fa-trash"
+                    ></i></a>
+                    <button type="button" style="color:black" class="btn btn-link" data-toggle="tooltip"
+                            data-placement="top"
+                            title="There is an exercise of this type in the exam"><i
+                            class="far fa-check-square"></i></button>
+
+                    {% else %}
+                    <button type="button" style="color:black" class="btn btn-link" data-toggle="tooltip"
+                            data-placement="top"
+                            title="There is no exercise of this type in the exam"><i
+                            class="far fa-square"></i></button>
+
+                    {% endif %}
+                    <a href="{% url 'topic exercise list' topic.pk %}">
+                        <button type="button" style="color:black" class="btn btn-link" data-toggle="tooltip"
+                                data-placement="top"
+                                title="Click here to see exercises of this type."><i
+                                class="fa fa-arrow-right"></i></button>
+                    </a>
+                </div>
+            </div>
+        </li>
+
+        {% endfor %}
+
+    </ul>
+</div>
+
+
+{% endblock %}

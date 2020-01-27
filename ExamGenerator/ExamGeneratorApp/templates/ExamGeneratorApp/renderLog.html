@@ -1,0 +1,9 @@
+{% extends "template.html" %}
+
+{% block content %}
+<div class="card border-dark shadow m-5">
+    <div class="card-body">
+        {{ log|escape|linebreaks }}
+    </div>
+</div>
+{% endblock %}

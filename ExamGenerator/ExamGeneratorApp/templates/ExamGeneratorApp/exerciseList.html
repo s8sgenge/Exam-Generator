@@ -1,0 +1,87 @@
+{% extends "template.html" %}
+
+
+{% block content %}
+
+<script>
+    function showMore(iframeId, buttonId) {
+        document.getElementById(iframeId).setAttribute("height", "1000");
+        let buttonElement = document.getElementById(buttonId);
+        buttonElement.innerText = "Show less";
+        buttonElement.setAttribute("onClick", "showLess('" + iframeId + "','" + buttonId + "')");
+    }
+
+    function showLess(iframeId, buttonId) {
+        document.getElementById(iframeId).setAttribute("height", "400");
+        let buttonElement = document.getElementById(buttonId);
+        buttonElement.innerText = "Show more";
+        buttonElement.setAttribute("onClick", "showMore('" + iframeId + "','" + buttonId + "')");
+    }
+</script>
+
+
+<div class="container-fluid" style="width: 90vw; margin: 50px auto; margin-top: 80px;">
+    {% for exercise in exercises %}
+    <div class="card card-outline-secondary m-4 shadow">
+        <a href="{% url 'exercise detail' exercise.pk %} " style="text-decoration: none; color: black">
+            <div class="card-header shadow-sm">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h5 class="text m-0 font-weight-normal">
+                            Exercise {{ exercise.pk }}
+                        </h5>
+                    </div>
+                    <div class="col-sm-2">
+                        <a class="btn btn-outline-dark btn-block"
+                           href="{% url 'add exercise to exam' exercise.pk %}" style="width: 150px;">Add to exam</a>
+                    </div>
+                </div>
+
+            </div>
+        </a>
+        <div class="card-body">
+            <iframe height="400" style="margin: 0px auto; width: 60vw;" id="iframe_{{ exercise.pk }}"
+                    src="{{ MEDIA_URL }}exercises/exercise{{ exercise.pk }}/document.pdf"></iframe>
+            <p>
+                <small class="text-muted">
+                    Uploaded by {{ exercise.exerciseText.author }} on {{ exercise.exerciseText.date }}
+                </small>
+                <button class="btn btn-outline-secondary btn-sm "
+                        id="show_more_button_{{ exercise.pk }}"
+                        type="button"
+                        aria-haspopup="true" aria-expanded="false"
+                        onclick="showMore('iframe_{{ exercise.pk }}','show_more_button_{{ exercise.pk }}')">
+                    Show more
+                </button>
+            </p>
+        </div>
+    </div>
+    {% endfor %}
+    {% if is_paginated %}
+    <div class="btn-toolbar m-4" role="toolbar">
+        <div class="btn-group" role="group">
+            {% if page_obj.has_previous %}
+            <a class="btn btn-secondary" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+            {% else %}
+            <a class="btn btn-secondary disabled"><span>&laquo;</span></a>
+            {% endif %}
+            {% for i in paginator.page_range %}
+            {% if page_obj.number == i %}
+            <a class="btn btn-secondary active"><span>{{ i }} <span class="sr-only">(current)</span></span></a>
+            {% else %}
+            <a class="btn btn-secondary" href="?page={{ i }}">{{ i }}</a>
+            {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <a class="btn btn-secondary" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+            {% else %}
+            <a class="btn btn-secondary" class="disabled"><span>&raquo;</span></a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+
+{% endblock %}

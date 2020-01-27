@@ -1,0 +1,186 @@
+% vim: set spelllang=de:
+\documentclass[a4paper,german,oneside]{article}
+%\usepackage[margin=2.5cm,bottom=3.2cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+%\usepackage{vmargin}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{comment}
+\usepackage{graphics}
+\usepackage{color}
+\usepackage{framed}
+\usepackage{epsfig}
+\usepackage{subfigure}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage[ngerman]{babel}
+\usepackage{listings}
+\usepackage{marvosym}
+\usepackage{bm}
+\usepackage{tikz}
+\usepackage[shortlabels,inline]{enumitem}
+\usepackage{textcomp}
+\usepackage{tikz-qtree}
+\usepackage{listliketab}
+\usepackage{tabto}
+\usepackage[labelfont=bf]{caption}
+\usepackage{lastpage}
+\usepackage{float}
+\usepackage{enumitem}
+
+\usetikzlibrary{calc,arrows,automata,positioning,shapes.geometric,fit}
+
+\setlength{\headheight}{12mm}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+
+\frenchspacing
+\pagestyle{fancy}
+\sloppy
+
+\markright{headline}
+
+
+% Macro for grading instructions.
+\newcommand{\points}[1]{\qquad\textbf{#1}}
+
+% this should fix the problem with the accented characters in the solutionbox environment
+% it is most probably due to the non-UTF8 encoding of the comment.cut file
+\renewcommand\ThisComment[1]{%
+    \immediate\write\CommentStream{\unexpanded{#1}}%
+}
+
+\newcommand\todo[1]{\textbf{\textcolor{red}{TODO: #1}}}
+
+% Definitions for the solution boxes:
+%
+\includecomment{solution}
+\includecomment{notinsolution}
+
+\newenvironment{fshaded}{
+    \definecolor{shadecolor}{rgb}{1,.95,.85}
+    \definecolor{framecolor}{rgb}{0.6,0.6,0.6}
+    \def\FrameCommand{\fcolorbox{framecolor}{shadecolor}}
+\MakeFramed {\FrameRestore}}
+{\endMakeFramed}
+
+\begin{solution}
+    \specialcomment{solutionbox}
+    {\begin{fshaded} {\large \textbf{Lösung:}} }
+    {\end{fshaded}}
+\end{solution}
+
+\begin{notinsolution}
+    \specialcomment{notinsolutionbox} {} {}
+\end{notinsolution}
+
+% By default we include the solutions.
+% Command used for excluding the solutions.
+\newcommand{\withoutsolutions}{\excludecomment{solutionbox}
+\renewcommand{\nosolutionspagebreak}{\pagebreak}
+\renewcommand{\solutionspagebreak}{}}
+
+\newcommand{\nosolutionspagebreak}{}
+\newcommand{\solutionspagebreak}{\pagebreak}
+
+\definecolor{darkgray}{rgb}{0.6,0.6,0.6}
+\definecolor{darkgreen}{rgb}{0.3,0.5,0.3}
+
+\newcommand{\link}[2]{\href{#2}{#1}\footnote{\url{#2}}}
+
+\lstset{literate=
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {Ã}{{\~A}}1 {ã}{{\~a}}1 {Õ}{{\~O}}1 {õ}{{\~o}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
+  {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
+}
+
+
+% Add the title of the assignment sheet and the name of the TA here:
+\newcommand{\TAName}{Marlon Maier}
+\newcommand{\subtitle}{\textbf{Endterm}}
+\newcommand{\examdate}{12. Juli 2049}
+
+\begin{document}
+
+\fancyhead[L]{%
+    \footnotesize
+    Bibliotheksvorkurs~SoSe~2049 \\
+    Big~Book~Analytics~Group \\
+    Universität~des~Saarlandes
+}
+
+\fancyhead[R]{%
+    \footnotesize
+    \begin{minipage}[b][9mm][t]{4cm}
+        \begin{flushright}
+            Prof.~Dr.~Max~Mustermann \\
+            \subtitle \\
+            \examdate
+        \end{flushright}
+    \end{minipage}%
+    \hspace{3mm}%
+    \includegraphics[height=9.5mm]{CS-UdS-logo.jpg}%
+}
+
+\author{Prof.~Max~Mustermann~et~al.}
+
+%begin_disclaimer
+\vspace*{.5cm}
+
+\textbf{Matrikelnummer: \underline{\hspace{2.5cm}} \quad Name: \underline{\hspace{7cm}} }
+
+\vspace*{1cm}
+
+Bitte lesen Sie die folgenden Anweisungen sorgfältig durch.
+
+\begin{itemize}
+	\item Die Re-Endterm besteht aus 120 Aufgaben auf \pageref{LastPage} Seiten und dauert 1000 Minuten.
+    \item Es können maximal 100 * e^10 Punkte erreicht werden.
+	\item Als Hilfsmittel sind ein nicht-programmierbarer Taschenrechner sowie zwei handbeschriebene DIN~A4 Blätter zugelassen.
+	\item Verwenden Sie ausschließlich blaue oder schwarze dokumentenechte Stifte, beispielsweise Kugelschreiber.
+	\item Schreiben Sie auf das erste Blatt Ihren Namen und Ihre Matrikelnummer.
+	\item Schreiben Sie lesbar und kennzeichnen Sie Ihre Lösungen immer mit der entsprechenden Aufgabennummer.
+	\item Wenn Sie zusätzliches Papier benötigen, melden Sie sich bei der Aufsicht. Schreiben Sie auf zusätzliches
+        Papier ebenfalls Ihren Namen und Ihre Matrikelnummer.
+	\item In den letzten 15 Minuten vor Ende der Re-Endterm ist das frühzeitige Abgeben nicht mehr gestattet.
+\end{itemize}
+
+\vspace*{9cm}
+
+{\Large
+\begin{center}
+  \begin{tabular}{|c||c|c|c|c|c||c|}
+    \hline
+    \textbf{Aufgabe} &  \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{$\sum$} \\ \hline
+    \textbf{Maximale Punkte}  & 15 & 20 & 22 & 23 & 20 & 100 \\ \hline
+    \textbf{Erreichte Punkte} & \quad & \quad  & \quad & \quad & \quad & \quad  \\ \hline
+   \end{tabular}
+\end{center}
+}
+
+\pagebreak
+%end_disclaimer
+
+\newcolumntype{x}[1]{>{\centering\arraybackslash\hspace{0pt}}p{#1}}
+\newcommand*\emptypage{\newpage \mbox{}}
+
+
+% Use this command to exclude solutions. Without that, the solutions are included.
+%\withoutsolutions
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

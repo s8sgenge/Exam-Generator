@@ -1,0 +1,246 @@
+{% extends "template.html" %}
+
+
+{% block content %}
+
+<style>
+    #PDF-Box-Left {
+        resize: none;
+    }
+</style>
+<style>
+    #Textboxexercise {
+        resize: none;
+    }
+</style>
+<style>
+    #Textboxsolution {
+        resize: none;
+    }
+</style>
+
+
+<div class="container" style="margin: 50px auto; margin-top: 80px;">
+    {% if error_count %}
+    <div class="row m-auto">
+        <div class="alert alert-danger alert-dismissible fade show m-auto" role="alert">
+            <strong> {{ error_count }} Errors </strong> encountered while rendering. The
+            resulting
+            PDF probably doesn't look the way you intended it to.
+            <a href="" type="button" data-toggle="modal" aria-pressed="false"
+               data-target="#error_log" class="" role="button">Click here to see
+                log part with errors</a>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    {% endif %}
+    {% if warning_count %}
+    <div class="row mt-2 mb-4">
+        <div class="alert alert-warning alert-dismissible fade show m-auto" role="alert">
+            <strong> {{ warning_count }} Warnings </strong> encountered while rendering. You
+            may
+            ignore these.
+            <a type="button"
+               href="{% url 'render log' %}" target="_blank" role="button">Click here to see
+                complete log</a>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    {% endif %}
+    <div class="row mb-4 mt-5">
+        <div class="col-12">
+            <div class="btn-group" role="group">
+                <a role="button" class="btn btn-outline-dark"
+                   href="{% url 'prev version' exercise.pk %}"><</a>
+                <a role="button" class="btn btn-outline-dark"
+                   href="{% url 'next version' exercise.pk %}">></a>
+            </div>
+
+        </div>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-sm">
+                {% if timeout_error %}
+                <h4>The pdflatex command rendering the pdf has timed out.</h4>
+                <p>{{ timout_error|linebreaks }}</p>
+                {% else %}
+                <iframe width="600" height="800" style="margin: 0px auto; width: 40vw;" type="application/pdf"
+                        src="{{ pdfPath }}">
+                </iframe>
+                {% endif %}
+            </div>
+
+
+            <div class="col-sm">
+                <div class="row mb-2">
+                    {{ form.header_choices }}
+                </div>
+                <div class="row">
+                    <h4> Exercise LaTex <small class="text-muted">(uploaded
+                        on {{ exerciseText.date|date }}, {{ exerciseText.date|time:"H:i" }}
+                        by {{ exerciseText.author }})</small></h4>
+
+                    {{ form.exerciseTex }}
+
+                </div>
+                <div class="row" style="margin-top: 20px; margin-bottom: 20px;">
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-outline-dark btn-sm" data-toggle="tooltip"
+                                style="width: 150px;"
+                                data-placement="top"
+                                title="Copy the latex code of exercise" onclick="copyexer()">Copy Latex
+                        </button>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <h4> Solution LaTex <small class="text-muted">(uploaded
+                        on {{ solutionText.date|date }}, {{ solutionText.date|time:"H:i" }}
+                        by {{ solutionText.author }})</small></h4>
+
+                    {{ form.solutionTex }}
+
+                </div>
+                <div class="row" style="margin-top: 20px; margin-bottom: 20px;">
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-outline-dark btn-sm" data-toggle="tooltip"
+                                data-placement="top" style="width: 150px;"
+                                title="Copy the latex code of solution" onclick="copysolu()">Copy Latex
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        <div class="row" style="margin-left: 10px; margin-top: 35px;">
+            <div class="col-sm">
+                <div class="btn-group">
+
+                    <div class="col-sm">
+                        <a class="btn btn-outline-dark btn-block"
+                           href="{% url 'add exercise to exam' exercise.pk %}" style="width: 150px;">Add to exam</a>
+                    </div>
+                    <div class="col-sm">
+                        <a class="btn btn-outline-dark btn-block"
+                           href="{% url 'exercise detail' exercise.pk %}" style="width: 150px;">Revert changes</a>
+                    </div>
+                    <div class="col-sm">
+                        <input type="submit" class="btn btn-outline-dark btn-block"
+                               value="Save as new version " name="new_exercise"/>
+                    </div>
+                    <div class="col-sm">
+                        <input type="submit" class="btn btn-outline-dark btn-block"
+                               value="Save and replace in exam" name="save_and_replace"/>
+                    </div>
+                    <div class="col-sm">
+                        <input type="submit" class="btn btn-outline-dark btn-block" data-toggle="tooltip"
+                               data-placement="top"
+                               title="Refresh PDF after edit exercise or solution" name="render_pdf"
+                               value="Render PDF"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Save changes?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                This will create a new version of the exercise using the changes you made. Are you sure?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="saveAndReplaceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="saveAndReplaceModalLabel">Save changes and replace in exam?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                This will replace the exercise currently in the exam and store it in the database. Are you sure?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Save and replace</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% if errors %}
+<div style="margin-bottom: 100px;" class="modal fade" id="error_log"
+     tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel-PDF">Rendered PDF<a
+                        type="button"
+                        href="{% url 'render log' %}" target="_blank" role="button">full log</a></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {{ errors|linebreaks }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script src="https://kit.fontawesome.com/8b41a163ea.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script>
+    function copyexer() {
+        let textarea = document.getElementById("Textboxexercise");
+        textarea.select();
+        document.execCommand("copy");
+    }
+</script>
+<script>
+    function copysolu() {
+        let textarea = document.getElementById("Textboxsolution");
+        textarea.select();
+        document.execCommand("copy");
+    }
+</script>
+
+
+{% endblock %}

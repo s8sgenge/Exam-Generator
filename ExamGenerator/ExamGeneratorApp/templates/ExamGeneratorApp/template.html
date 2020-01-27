@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<style>
+    input[type=submit] {
+        /*your styles here.....*/
+    }
+</style>
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Exam Generator</title>
+    {% block header_scripts %}
+    {% endblock %}
+</head>
+
+<body>
+<div class="pos-f-t fixed-top" style="margin-bottom: 15px;">
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top"
+         style="height: 40px; background: #212529; background-color: #212529;">
+        <button class="nav-item btn" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent"
+                aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}">Exam Generator</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                    aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+
+                <div class="navbar-nav">
+
+                    <a class="nav-item nav-link" href="{% url 'topic overview' %}">Exercises</a>
+                    <a class="nav-item nav-link" href="{% url 'upload exercise' %}">Import</a>
+                    <a class="nav-item nav-link" href="{% url 'exam detail view' %}">Your Exam</a>
+
+                </div>
+
+                <div class="navbar-nav ml-auto">
+                    {% if user.is_superuser or user.is_staff %}
+                    <a class="nav-item nav-link" href="{% url 'user permissions' %}" role="button"> User
+                        Permissions </a>
+                    {% endif %}
+                    <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+                    <a id="help-button" type="button" data-toggle="modal" aria-pressed="false" autocomplete="off"
+                       data-target="#help" class="nav-item nav-link" role="button"> <i
+                            class="far fa-question-circle"></i></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="collapse" id="navbarToggleExternalContent">
+        <div class="p-4" style="background: #212529;">
+            <div class="card" style="margin-left: 70px;margin-right: 70px;max-height: 500px; overflow-y: scroll;">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="card-body">
+                                <h2 style="margin-bottom: 20px;">Topic Overview</h2>
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'exam detail view' %}" class="btn btn-outline-dark"
+                                       style="width: 150px;" type="button">Exam</a>
+                                    <a href="{% url 'header list' %}" class="btn btn-outline-dark "
+                                       style="width: 150px;" type="button">Headers</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    {% for topic in topics %}
+
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <div class="card-body">{{ topic }}</div>
+                            </div>
+                            <div class="col-sm-2" style="margin-top: 5px;">
+                                {% if topic in examTopics %}
+                                <a type="button" style="color:black" class="btn btn-link"
+                                   data-toggle="tooltip"
+                                   data-placement="top"
+                                   title="Click here to remove the exercise from the exam"
+                                   href="{% url 'remove exercise by topic' topic.pk %}?return_to={{ request.path }}"><i
+                                        class="fas fa-trash"
+                                ></i></a>
+                                <button type="button" style="color:black" class="btn btn-link"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="There is an exercise of this type in the exam"><i
+                                        class="far fa-check-square"></i></button>
+
+                                {% else %}
+                                <button type="button" style="color:black" class="btn btn-link"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="There is no exercise of this type in the exam"><i
+                                        class="far fa-square"></i></button>
+
+                                {% endif %}
+                                <a href="{% url 'topic exercise list' topic.pk %}">
+                                    <button type="button" style="color:black" class="btn btn-link"
+                                            data-toggle="tooltip"
+                                            data-placement="top" title="Click here to see exercises of this type.">
+                                        <i
+                                                class="fa fa-arrow-right"></i></button>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="content">
+    {% block content %}{% endblock %}
+</div>
+<div style="margin-bottom: 100px;" class="modal fade" id="help"
+     tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel-PDF">Help</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% if user.is_superuser or user.is_staff %}
+                <div class="card card-outline-secondary m-4 shadow">
+                    <div class="card-header">
+                        <h4>
+                            Assigning user permissions
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Click user "User Permissions" to assign permissions. You need to put them in a group
+                            called
+                            "Employee" or they won't be abel to access the database.</p>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="card card-outline-secondary m-4 shadow">
+                    <div class="card-header">
+                        <h4>
+                            Generating an exam
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <p>
+                            If your goal is to generate a new exam from existing exercises you can either click
+                            on 'Generate' on the welcome screen or you can click on 'Exercises' in the navigation bar.
+                            <br><br>
+                        <h5>
+                            Exercises:
+                        </h5>
+                        Now you can see all the different topics currently in the database. If there is
+                        already an exercise of a topic in your exam, there is a ticked square ( <i
+                            class="far fa-check-square"></i> ). <br>
+                        You can delete the exercise from your exam by clicking the trashcan ( <i
+                            class="fas fa-trash"></i> ). <br>
+                        If you currently don't have an exercise of this topic, there will be an empty square
+                        ( <i class="far fa-square"></i> ). <br>
+                        You can click on the arrow ( <i class="fa fa-arrow-right"></i> ) to see a list of
+                        all the topic's exercises. <br>
+                        <br>
+                        <h5>
+                            Exercise list:
+                        </h5>
+                        Click on an exercise in the list to see a detailed view of the exercise. <br>
+                        You can look through the different versions by clicking on the arrows above the
+                        rendered PDF. <br>
+                        On the right of the PDF you can edit the LaTeX code. <br>
+                        Below the exam you can add the exercise to your exam, save it as a new version, save
+                        it and replace it in the current exam or render the PDF.<br>
+                        Just clicking the 'Render PDF' button will not save your changes to the exercise, but only
+                        display what it would look like.<br>
+                        If you click on 'Add to exam' or 'Save and replace', your exam will open up with the added
+                        exercise. <br>
+                        <br>
+                        <h5>
+                            Exam:
+                        </h5>
+                        First you need to choose a header, save your selection and click on 'Render PDF' to
+                        see your rendered Exam. <br>
+                        On the left you can now see your rendered PDF, on the right you can change the
+                        exercise order using drag and drop. Once you changed the order, you need to
+                        click 'Render PDF' again to see the result.<br>
+                        When you are finished creating your exam, you can click on 'Continue to Download'.
+                        <br>
+                        <br>
+                        <h5>
+                            Download:
+                        </h5>
+                        Now you can either download your exam as a PDF with Solution or without. The same
+                        applies to the download of the LaTeX Code.
+
+                        </p>
+                    </div>
+                </div>
+                <div class="card card-outline-secondary m-4 shadow">
+                    <div class="card-header">
+                        <h4>
+                            Importing an exercise
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <p>
+                            If your goal is to import a new exercise or a new header to the database, you can either
+                            click
+                            on 'Import' on the welcome screen or you can click on 'Import' in the navigation bar.
+                            <br><br>
+                        <h5>
+                            Import an exercise:
+                        </h5>
+                        If you want to create a new topic, you can enter the topic name in the form and click add
+                        afterwards.
+                        <br>
+                        To import an exercise, you need to select if the exercise is modifiable, the language, a
+                        document header and the number of reachable points.
+                        <br>
+                        If your LaTeX code has external dependencies, you can upload them on the button on the right
+                        hand side. Please make sure you refer to the files directly by their name in the LaTeX code.
+                        File ending (i.e. .jpg etc) have to be lowercase.
+                        <br>
+                        Enter LaTeX exercise code and LaTeX solution code in the desired boxes and click 'Render PDF'.
+                        <br>
+                        Now you can see your rendered exercise. If there were any errors in your LaTeX code, they will
+                        be printed where the PDF should appear. <br>
+                        If you now want to import the exercise to the database, all you need to do is upload the
+                        external files again and click on 'Import Exercise'. <br> <br>
+
+                    </div>
+                </div>
+                <div class="card card-outline-secondary m-4 shadow">
+                    <div class="card-header">
+                        <h4>
+                            On creating a header
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        To import a header, you have to specify a name and its LaTeX code. <br>
+                        There are several points to take note of:
+                        <ul>
+                            <li>The LaTeX code has to include all desired packages that will be used by the
+                                exercises.
+                            </li>
+                            <li>It has to specify the document type and include \begin{documet}.
+                            </li>
+                            <li>This is also where you should put any custom commands you want to use.
+                            </li>
+                            <li>If you have exercises where task and solution are interwoven you have to
+                                create a command \withoutsolutions that excludes the solution part and put it
+                                somewhere
+                                in the header like this: %\withoutsolution.
+                            </li>
+                            <li>If you have a disclaimer in your header you should put the comment
+                                %begin_disclaimer before it, and the comment %end_disclaimer after it. This is
+                                not
+                                necessary but without it you will always see the disclaimer when you render
+                                anything.
+                            </li>
+                            <li>Include external files by uploading them.
+                            </li>
+                        </ul>
+                        Once you are finished working on your header, you can import it by clicking
+                        'Submit header'.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="http://SortableJS.github.io/Sortable/Sortable.js"></script>
+    <script src="https://kit.fontawesome.com/8b41a163ea.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    {% block java_script %}
+    {% endblock %}
+</body>
+
+</html>

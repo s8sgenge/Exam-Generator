@@ -1,0 +1,44 @@
+{% extends "template.html" %}
+{% block content %}
+
+
+<div style="width: 50vw; margin: 50px auto;">
+
+    <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+
+        {% for form in formset %}
+        {% if form.instance.username != "deleted" %}
+        <div class="card  m-4 shadow border-dark">
+            <div class="card-header">
+                <h5 class="text m-0 font-weight-normal ">
+                    {% if form.instance.first_name != "" %}
+                    {{ form.instance.first_name }} {{ form.instance.last_name }}
+                    {% else %}
+                    Admin
+                    {% endif %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <p>
+                    Username : {{ form.instance.username }}
+                </p>
+                <p>
+                    Email : {{ form.instance.email }}
+                </p>
+                {{ form }}
+                <button type="submit" class="btn btn-outline-dark btn-block"
+                        style="margin-top: 20px; width: 130px;">Save changes
+                </button>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+
+    </form>
+
+</div>
+
+
+{% endblock %}

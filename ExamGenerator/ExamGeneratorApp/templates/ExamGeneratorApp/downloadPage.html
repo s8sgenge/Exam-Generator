@@ -1,0 +1,71 @@
+{% extends "template.html" %}
+
+
+{% block content %}
+
+<div class="container">
+    <div class="card border-dark shadow" style=" text-align: center;width: 60vw; margin: 110px auto; margin-top: 80px;">
+        {% if err_without_solution or err_with_solution %}
+        <h5>The following errors occurred when trying to render the LaTeX.</h5>
+        <h6>File with solutions:</h6>
+        <p>{{ err_with_solution}}</p>
+        <h6>File without solutions:</h6>
+        <p>{{err_without_solution}}</p>
+        {% else %}
+        <h3 class="display-5" style="margin-top: 50px;">Congratulations, you finished creating your exam!</h3>
+        <p class="lead">You can now download the exam or save it in the database for later use. </p>
+        <hr style="width: 30vw; margin: auto; margin-bottom: 10px; margin-top: 20px;">
+        <p class="lead" style="margin-bottom: 20px;">
+
+        <div class="row" style="margin: auto; margin-bottom: 15px;">
+            <div class="col-6">
+                <div class="card border-dark" style="width: 20vw; margin: 15px;border: none;">
+                    <h6 style="margin-top: 10px;">
+                        PDF Download
+                    </h6>
+                    <a href="{{ PDFWithoutSolution}}" target="_blank" type="button"
+                       style="margin-right: 15px; margin-top: 8px;">
+                        Without Solution
+                    </a>
+                    <a href="{{ PDFWithSolution}}" target="_blank" type="button"
+                       style="margin-right: 15px; margin-bottom: 10px;">
+                        With Solution
+                    </a>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card border-light" style="width: 20vw; margin: 15px; border: none;">
+                    <h6 style="margin-top: 10px;">
+                        LaTeX Download
+                    </h6>
+                    <a href="{{ LatexWithoutSolution}}" target="_blank" type="button"
+                       style="margin-right: 15px; margin-top: 8px;">
+                        Without Solution
+                    </a>
+                    <a href="{{ LatexWithSolution}}" target="_blank" type="button"
+                       style="margin-right: 15px; margin-bottom: 10px;">
+                        With Solution
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <a id="Save-to-DB" type="button" class="btn btn-outline-dark" data-toggle="mbutton"
+           aria-pressed="false" style="margin: 30px; width: 20vw; margin: auto; margin-top: 15px; margin-bottom: 20px;"
+           autocomplete="off" href="{% url 'newExam' %}">
+            Create new exam
+        </a>
+
+        </p>
+    </div>
+</div>
+
+
+<script>
+    function alertDBSuccess() {
+        alert("Adding to Database was successful!");
+    }
+</script>
+
+
+{% endblock %}

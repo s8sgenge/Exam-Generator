@@ -1,0 +1,162 @@
+{% extends "template.html" %}
+
+
+{% block content %}
+
+<div class="container-fluid" style="width: 90vw; margin: 50px auto; margin-top: 80px;">
+    {% if error_count %}
+    <div class="row m-auto" style=" width: 80vw;">
+        <div class="alert alert-danger alert-dismissible fade show m-auto" role="alert">
+            <strong> {{ error_count }} Errors </strong> encountered while rendering. The
+            resulting
+            PDF probably doesn't look the way you intended it to.
+            <a href="" type="button" data-toggle="modal" aria-pressed="false"
+               data-target="#error_log" class="" role="button">Click here to see
+                log part with errors</a>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    {% endif %}
+    {% if warning_count %}
+    <div class="row mt-2 mb-4">
+        <div class="alert alert-warning alert-dismissible fade show m-auto" role="alert">
+            <strong> {{ warning_count }} Warnings </strong> encountered while rendering. You
+            may
+            ignore these.
+            <a type="button"
+               href="{% url 'render log' %}" target="_blank" role="button">Click here to see
+                complete log</a>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-sm-6">
+            {% if timeout_error %}
+            <h4>The pdflatex command rendering the pdf has timed out.</h4>
+            <p>{{ timout_error|linebreaks }}</p>
+            {% else %}
+            {% if pdfPath %}
+            <iframe width="550" height="800" style="margin: 0px;"
+                    src="{{ pdfPath }}">
+            </iframe>
+            {% else %}
+            <h4>You need to click 'render pdf' to see the exam</h4>
+            {% endif %}
+            {% endif %}
+
+        </div>
+        <div class="col-sm-6">
+            <form method="POST">
+                {% csrf_token %}
+                {{ exam_form }}
+                <input type="submit" name="save_headerselection"
+                       class="btn btn-outline-dark mb-1"
+                       value="Save selection"/>
+            </form>
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <strong> Hint: </strong>You can change the order of the exercises by simply dragging them around.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+
+            <div class="list-group" id="exerciseListDrag">
+                {% for exercise in exercises %}
+
+                <div class="list-group-item card border-dark">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 ">
+                                <b> Exercise {{ forloop.counter }} </b>
+                                <br>
+                                <div style="max-height: 250px; overflow-y: scroll">
+                                    {{ exercise.exercise.exerciseText }}
+                                </div>
+                                <br>
+                            </div>
+
+                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-12 ">
+                                <a href="{% url 'delete exercise' exercise.position %} ">
+                                    <button class="btn"><i class="fas fa-trash"></i></button>
+                                </a>
+                            </div>
+
+                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-12 ">
+                                <a href="{% url 'exercise detail' exercise.exercise.pk %} ">
+                                    <button class="btn"><i class="fas fa-arrow-right"></i></button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% endfor %}
+            </div>
+
+
+            <div class="row-sm-8">
+                <div class="container">
+                    <div class="row" style="margin-left: 150px; margin-top: 15px;">
+                        <div class="col">
+                            <a href="{% url 'download page' %}" style="width: 250px; margin-top: 30px;"
+                               class="btn btn-outline-dark btn-lg">Continue to download</a>
+                            <a class="btn btn-outline-dark btn-lg" style="width: 250px; margin-top: 30px;"
+                               href="{% url 'exam detail view' %}?render=True">
+                                Render PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+{% if errors %}
+<div style="margin-bottom: 100px;" class="modal fade" id="error_log"
+     tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel-PDF">Rendered PDF <a
+                        type="button"
+                        href="{% url 'render log' %}" target="_blank" role="button">full log</a></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {{ errors|linebreaks }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+{% endblock %}
+{% block java_script %}
+
+<script>
+    Sortable.create(exerciseListDrag, {
+            animation: 150,
+            onEnd: function (evt) {
+                var oldIndex = evt.oldIndex;
+                var newIndex = evt.newIndex;
+                if (oldIndex != newIndex) {
+                    window.location.assign("{% url 'change order' %}" + "?oldIndex=" + oldIndex + "&newIndex=" + newIndex);
+                }
+            }
+        }
+    );
+</script>
+<script src="https://kit.fontawesome.com/8b41a163ea.js"></script>
+{% endblock %}

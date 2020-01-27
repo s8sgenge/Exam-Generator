@@ -1,0 +1,287 @@
+{% extends "template.html" %}
+
+{% block header_scripts %}
+{% if rendered %}
+<script type="text/javascript">
+    $(window).on('load', function () {
+        $('#renderModal').modal('show');
+    });
+</script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+
+<h3 style="text-align: center;margin-top: 80px; margin-bottom: 30px;">
+    Import Exercise
+</h3>
+<hr style="width: 85vw;">
+{% if imported %}
+<div class="row mt-2">
+    <div class="alert alert-success alert-dismissible fade show m-auto" role="alert">
+        Successfully imported the exercise.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+</div>
+{% endif %}
+{% if imported_header %}
+<div class="row mt-2">
+    <div class="alert alert-success alert-dismissible fade show m-auto" role="alert">
+        Successfully imported the header.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+</div>
+{% endif %}
+{% if not_imported_header %}
+<div class="row mt-2">
+    <div class="alert alert-danger alert-dismissible fade show m-auto" role="alert">
+        Could not import the header. Header names have to be unique.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+</div>
+{% endif %}
+{% if imported_topic %}
+<div class="row mt-2">
+    <div class="alert alert-success alert-dismissible fade show m-auto" role="alert">
+        Successfully added topic.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+</div>
+{% endif %}
+{% if not_imported_topic %}
+<div class="row mt-2">
+    <div class="alert alert-danger alert-dismissible fade show m-auto" role="alert">
+        Could not add topic. Topic names have to be unique.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+</div>
+{% endif %}
+<div class="row" style="margin: 50px auto; width: 85vw;">
+    <div class="col-lg-10">
+        <button class="btn btn-outline-dark btn-block" type="button" style="width: 150px;" data-toggle="collapse"
+                data-target="#headerFormCollapse"
+                aria-expanded="false" aria-controls="headerFormCollapse">
+            Add header
+        </button>
+    </div>
+</div>
+<div class="collapse" id="headerFormCollapse">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row" style="margin: 50px auto; width: 85vw;">
+            <div class="col-lg-10">
+                <h5 style="margin-bottom: 15px;">Document Head LaTex </h5>
+                <div class="form-group">
+                    {{ header_form }}
+                    <input class="btn btn-outline-dark btn-block" type="submit" name="submit_header"
+                           value="Submit header"
+                           style="width: 200px;margin-left: auto; margin-right: auto;">
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<hr style="width: 85vw;">
+
+<form method="POST">
+    {% csrf_token %}
+    <div class="row" style="margin: 50px auto; width: 85vw;">
+        <div class="col-2">
+            <div style="width: 180px;">
+                {{ topic_form.name }}
+            </div>
+        </div>
+        <div class="col-10">
+            <input class="btn btn-outline-dark btn-block" style="width: 90px;" type="submit"
+                   name="submit_topic" value="Add"
+                   style="">
+        </div>
+    </div>
+</form>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="row" style="margin: 50px auto; width: 85vw;">
+        <div class="col-lg-6">
+            <div class="form-group" style="width: 275px;">
+
+                {{ upload.modifyable }}
+
+            </div>
+            <div class="form-group" style="width: 275px;">
+
+                {{ upload.languages }}
+
+            </div>
+            <div class="form-group" style="width: 275px;">
+
+                {{ upload.header_choices }}
+
+            </div>
+            <div class="form-group" style="width: 275px;">
+                {{ upload.topic_choices }}
+
+
+            </div>
+
+            <div style="width: 275px;">
+                {{ upload.points }}
+            </div>
+
+        </div>
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        {{ upload.fileDependencies }}
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr style="width: 85vw;">
+
+
+    <div class="row" style="margin: 50px auto; width: 85vw;">
+        <div class="col-lg-12">
+            <h5 style="margin-bottom: 15px;">Exercise LaTex </h5>
+            {{ upload.exerciseTex }}
+        </div>
+    </div>
+    <div class="row" style="margin: 50px auto; width: 85vw;">
+        <div class="col-lg-12">
+            <h5 style="margin-bottom: 15px;">Solution LaTex </h5>
+            {{ upload.solutionTex }}
+        </div>
+    </div>
+
+    {% if not_imported %}
+    <div class="row mt-2">
+        <div class="alert alert-info alert-dismissible fade show m-auto" role="alert">
+            <strong> Hint: </strong> Remember that you have to select the file
+            dependencies again
+            if you're editing your exercise.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    {% endif %}
+    <div class="row" style="margin: 50px auto; width: 85vw;">
+        <input class="btn btn-outline-dark btn-block" type="submit" name="render_exercise"
+               style="width: 200px;margin-left: auto; margin-right: auto;" value="Render exercise">
+
+    </div>
+
+    <div style="margin-bottom: 100px;" class="modal fade in" id="renderModal"
+         tabindex="-1" role="dialog" aria-labelledby="renderModal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rendermodaltitle">Rendered PDF</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        {% if error %}
+                        <h5>Pdflatex process timed out. The following errors were encountered:</h5>
+                        <p>{{ error|linebreaks }}</p>
+
+                        {% else %}
+                        {% if error_count %}
+                        <div class="row mt-2">
+                            <div class="alert alert-danger alert-dismissible fade show m-auto" role="alert">
+                                <strong> {{ error_count }} Errors </strong> encountered while rendering. The
+                                resulting
+                                PDF probably doesn't look the way you intended it to. Are you sure you added
+                                all file
+                                dependencies?
+                                <a href="#errorsCollapse" role="button" data-toggle="collapse"
+                                   role="button">Click here to see
+                                    log part with errors</a>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="collapse" id="errorsCollapse">
+                            {{ errors|linebreaks }}
+                        </div>
+                        {% endif %}
+                        {% if warning_count %}
+                        <div class="row mt-2">
+                            <div class="alert alert-warning alert-dismissible fade show m-auto"
+                                 role="alert">
+                                <strong> {{ warning_count }} Warnings </strong> encountered while rendering.
+                                You
+                                may
+                                ignore these.
+                                <a type="button"
+                                   href="{% url 'render log' %}" target="_blank" role="button">Click here to
+                                    see
+                                    complete log</a>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div class="row mt-2" style="margin: 50px auto; width: 85vw;margin: auto">
+                            {{ response |safe }}
+                        </div>
+
+                        {% endif %}
+                        <div class="row mb-2">
+                            <input class="btn btn-outline-dark btn-block" type="submit" name="submit_exercise"
+                                   value="Import exercise"
+                                   style="width: 200px;margin-left: auto; margin-right: auto;">
+                        </div>
+                        <div class="row">
+                            <iframe width="600" height="800" style="margin: 0px auto; width: 40vw;"
+                                    src="{{ pdf_path }}">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% if errors %}
+<div style="margin-bottom: 100px;" class="modal fade" id="error_log"
+     tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel-PDF">Rendered PDF<a
+                        type="button"
+                        href="{% url 'render log' %}" target="_blank" role="button">full log</a></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {{ errors|linebreaks }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+{% endblock %}
